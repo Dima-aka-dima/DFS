@@ -42,14 +42,12 @@ struct Edge : std::vector<AdjList::iterator> {};
 
 int main()
 {
-	std::vector<std::vector<size_t>> adjI;
-	adjI.push_back({1, 2}); adjI.push_back({3, 4}); adjI.push_back({2, 5});
-	adjI.push_back({}); adjI.push_back({}); adjI.push_back({});
+	std::vector<std::vector<size_t>> graph = {{1,2}, {3,4}, {2,5}, {}, {}, {}};
 
 	AdjList adj; 
-	adj.reserve(adjI.size()); // This is super important, otherwise adj.begin() might get reallocated 
+	adj.reserve(graph.size()); // This is super important, otherwise adj.begin() might get reallocated 
 	auto start = adj.begin();
-	for(auto& u: adjI)
+	for(auto& u: graph)
 	{
 		adj.emplace_back();
 		for(size_t v: u) adj.back().push_back(start + v);
