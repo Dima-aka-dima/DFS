@@ -2,6 +2,7 @@
 #include <vector>
 #include <utility>
 
+
 template<class Iterator, class UnaryOp>
 void dfs(Iterator it, UnaryOp op)
 {
@@ -9,43 +10,34 @@ void dfs(Iterator it, UnaryOp op)
 	for(Iterator to: *it) dfs(to, op);
 }
 
-template<class Iterator, class UnaryPred, class UnaryOp>
-void dfs(Iterator it, UnaryPred p, UnaryOp op)
+template<class Iterator, class UnaryOp, class UnaryPred>
+void dfs(Iterator it, UnaryOp op, UnaryPred p)
 {
 	op(it);
-	for(Iterator to: *it) if(p(to)) dfs(to, p, op);
+	for(Iterator to: *it) if(p(to)) dfs(to, op, p);
 }
 
-using Bool = uint8_t;
 
 
-template <template <typename...> class Outer = std::vector,
-		  template <typename...> class Inner = std::vector>
+template <template <typename...> class Outer, template <typename...> class Inner>
 struct Edge;
 
-template <template <typename...> class Outer = std::vector,
-		  template <typename...> class Inner = std::vector>
+template <template <typename...> class Outer, template <typename...> class Inner>
 struct Adj : Outer<Edge<Outer, Inner>> {};
 
-template <template <typename...> class Outer,
-		  template <typename...> class Inner>
+template <template <typename...> class Outer, template <typename...> class Inner>
 struct Edge : Inner<typename Adj<Outer, Inner>::iterator> {};
 
-/*
-template <template <typename...> class Container = std::vector>
-struct Edge;
+using AdjList = Adj<std::vector, std::vector>;
 
-template <template <typename...> class Container = std::vector>
-struct Adj : Container<Edge<Container>> {};
+// TODO: Implement
+// using AdjMatrix = Adj<std::vector, ?>
 
-template <template <typename...> class Container>
-struct Edge : Container<typename Adj<Container>::iterator> {};
-*/
 
 /*
 struct Edge;
-struct Adj : std::vector<Edge> {};
-struct Edge : std::vector<Adj::iterator> {};
+struct AdjList : std::vector<Edge> {};
+struct Edge : std::vector<AdjList::iterator> {};
 */
 
 int main()
@@ -54,7 +46,7 @@ int main()
 	adjI.push_back({1, 2}); adjI.push_back({3, 4}); adjI.push_back({2, 5});
 	adjI.push_back({}); adjI.push_back({}); adjI.push_back({});
 
-	Adj adj; 
+	AdjList adj; 
 	adj.reserve(adjI.size()); // This is super important, otherwise adj.begin() might get reallocated 
 	auto start = adj.begin();
 	for(auto& u: adjI)
@@ -66,10 +58,11 @@ int main()
 	// dfs(adj.begin(), [=](auto it) {std::cout << std::distance(start, it) << std::endl; });
 
 
+	using Bool = uint8_t;
 	std::vector<Bool> visited(adj.size(), false);
 	auto isVisited = [&visited, start](auto u){ return not std::exchange(visited[std::distance(start, u)], true); };
 
-	dfs(start, isVisited, [=](auto it){ std::cout << std::distance(start, it) << std::endl; });
+	dfs(start, [=](auto it){ std::cout << std::distance(start, it) << std::endl; }, isVisited);
 	
 
 }
