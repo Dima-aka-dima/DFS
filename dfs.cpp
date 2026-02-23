@@ -4,43 +4,6 @@
 #include <queue>
 #include <stack>
 
-void dfs(const std::vector<std::vector<size_t>>& graph, size_t start)
-{
-	std::vector<bool> visited(graph.size());
-	std::stack<size_t> s;
-	s.push(start);
-
-	while (!s.empty())
-	{
-		size_t u = s.top();
-		s.pop();
-
-		if (visited[u]) continue;
-		visited[u] = true;
-		std::cout << u << " ";
-
-		for (size_t v : graph[u]) s.push(v);
-	}
-}
-
-void bfs(const std::vector<std::vector<size_t>>& graph, size_t start)
-{
-	std::vector<bool> visited(graph.size());
-	std::queue<size_t> q;
-	q.push(start);
-
-	while (!q.empty())
-	{
-		size_t u = q.front();
-		q.pop();
-
-		if (visited[u]) continue;
-		visited[u] = true;
-		std::cout << u << " ";
-
-		for (size_t v : graph[u]) q.push(v);
-	}
-}
 
 template<class Iterator, class UnaryOp>
 void dfs(Iterator it, UnaryOp op)
@@ -161,3 +124,41 @@ int main()
 		std::cout << loop << std::endl;
 	}
 }
+
+void dfs(const std::vector<std::vector<size_t>>& graph, size_t start)
+{
+	std::vector<bool> visited(graph.size());
+	std::stack<size_t> s;
+	s.push(start);
+
+	while (!s.empty())
+	{
+		size_t u = s.top(); s.pop();
+
+		if (visited[u]) continue;
+		visited[u] = true;
+		std::cout << u << " ";
+
+		for (size_t v : graph[u]) s.push(v);
+	}
+}
+
+void bfs(const std::vector<std::vector<size_t>>& graph, size_t start)
+{
+	std::vector<bool> visited(graph.size());
+	std::queue<size_t> q;
+	q.push(start);
+
+	while (!q.empty())
+	{
+		size_t u = q.front(); q.pop();
+
+		if (visited[u]) continue;
+		visited[u] = true;
+		std::cout << u << " ";
+
+		for (size_t v : graph[u]) q.push(v);
+	}
+}
+
+
